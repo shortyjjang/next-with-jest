@@ -4,10 +4,12 @@ import Input from "@/entities/form/input";
 import Title from "@/entities/text/title";
 import useUserInfo from "@/shared/store/user";
 import { validatationPassword } from "@/shared/utils/validatation";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 export default function LoginLanding() {
   const {setUser, token} = useUserInfo()
+  const router = useRouter();
   const loginIdRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const [body, setBody] = useState({
@@ -21,6 +23,7 @@ export default function LoginLanding() {
       return;
     }
     setUser(body.loginId, "token");
+    router.push("/");
   };
   useEffect(() => {
     if (!loginIdRef.current) return;
