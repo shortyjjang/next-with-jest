@@ -16,7 +16,19 @@
   }
 }
 
+input::placeholder {
+  font-weight:normal;
+}
+
+
 body {
+  background: #f5f5f5;
+  font-size: 16px;
+}
+input, textarea, button {
+  font-size: 1em;
+  outline: none;
+  appearance: none;
 }
 
 @layer utilities {
