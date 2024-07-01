@@ -8,12 +8,12 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 export default function LoginLanding() {
-  const {setUser, token} = useUserInfo()
+  const {setUser} = useUserInfo()
   const router = useRouter();
   const loginIdRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
-  const [body, setBody] = useState({
-    loginId: "",
+  const [body, setBody] = useState<LoginParams>({
+    username: "",
     password: "",
   });
   const handleLogin = (e: React.FormEvent) => {
@@ -22,7 +22,7 @@ export default function LoginLanding() {
       alert("비밀번호는 8자 이상, 16자 이하,\n영문, 숫자, 특수문자 중 두가지를 포함해야 합니다.");
       return;
     }
-    setUser(body.loginId, "token");
+    setUser(body.username, "token");
     router.push("/");
   };
   useEffect(() => {
@@ -35,8 +35,8 @@ export default function LoginLanding() {
       <form onSubmit={handleLogin}>
         <Input
           ref={loginIdRef}
-          value={body.loginId}
-          onChange={(value) => setBody({ ...body, loginId: value })}
+          value={body.username}
+          onChange={(value) => setBody({ ...body, username: value })}
           styleType="border"
           className="mb-[10px]"
           onKeyDown={(e) => {
@@ -58,7 +58,7 @@ export default function LoginLanding() {
           placeholder="비밀번호"
         />
         <Button
-          disabled={!body.loginId || !body.password}
+          disabled={!body.username || !body.password}
           styleType="primary"
           size="lg"
           type="submit"

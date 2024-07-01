@@ -9,11 +9,12 @@ import {
   validatationPassword,
   validationEmail,
 } from "@/shared/utils/validatation";
-import React, { useId, useState, useEffect } from "react";
+import React, { useId, useState } from "react";
 
 export default function RegisterLanding() {
   const id = useId();
-  const { token, setUser } = useUserInfo();
+  const { setUser } = useUserInfo();
+  const [checkedId, setCheckedId] = useState(false);
   const [body, setBody] = useState<RegisterUserType>({
     customerMallId: "",
     password: "",
@@ -27,8 +28,38 @@ export default function RegisterLanding() {
     customerSmsRcvYn: false,
     customerMailRcvYn: false,
   });
+  const handleCheckedId = () => {
+    setCheckedId(true);
+  };
+  const onChange = (
+    key: keyof RegisterUserType,
+    value: string,
+    type: string = "text"
+  ) => {
+    let changeValue = type === "tel" ? value.replace(/[^0-9]/g, "") : value;
+    if (type === "tel") {
+      if (changeValue.length > 11) {
+        changeValue = String(body[key as keyof RegisterUserType]);
+      } else if (changeValue.length > 7) {
+        changeValue =
+          changeValue.substring(0, 3) +
+          "-" +
+          changeValue.substring(3, 7) +
+          "-" +
+          changeValue.substring(7);
+      } else if (changeValue.length > 3) {
+        changeValue =
+          changeValue.substring(0, 3) + "-" + changeValue.substring(3);
+      }
+    }
+    setBody({
+      ...body,
+      [key]: changeValue,
+    });
+  };
   const handleJoinMember = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log(body);
     if (!validatationPassword(body.password, body.passwordConfirm)) {
       alert("비밀번호를 확인해주세요");
       return;
@@ -49,103 +80,82 @@ export default function RegisterLanding() {
       <Title>회원가입</Title>
       <form onSubmit={handleJoinMember}>
         <Title type="h3">일반 회원가입</Title>
-        {formArray
-          .filter((item, i) => i < 3)
-          .map((item, i) => (
-            <div
-              key={item?.key}
-              className={`grid px-[15px] py-[5px] ${i > 0 ? "" : "border-t"} border-x border-b border-gray-300`}
-              style={{
-                gridTemplateColumns: "100px auto",
-              }}
+        {formArray.slice(0, 3).map((item, i) => (
+          <div
+            key={item?.key}
+            className={`grid px-[15px] py-[5px] ${i > 0 ? "" : "border-t"} border-x border-b border-gray-300`}
+            style={{
+              gridTemplateColumns: "100px auto",
+            }}
+          >
+            <label
+              htmlFor={id + item?.key}
+              className="items-center flex text-gray-600"
             >
-              <label
-                htmlFor={id + item?.key}
-                className="items-center flex text-gray-600"
-              >
-                {item?.label}{" "}
-                {item?.required && <span className="text-[#009e48]">*</span>}
-              </label>
-              <div className="flex items-center justify-between gap-[8px]">
-                <Input
-                  type={item?.type}
-                  id={id + item?.key}
-                  placeholder={item?.placeholder}
-                  required={item?.required}
-                  className="font-bold"
-                  value={String(body[item?.key as keyof RegisterUserType])}
-                  onChange={(value) =>
-                    setBody({
-                      ...body,
-                      [item?.key]: value,
-                    })
-                  }
-                />
-                {item?.key === "username" && <Button size="sm">중복확인</Button>}
-              </div>
+              {item?.label}{" "}
+              {item?.required && <span className="text-[#009e48]">*</span>}
+            </label>
+            <div className="flex items-center justify-between gap-[8px]">
+              <Input
+                type={item?.type}
+                id={id + item?.key}
+                placeholder={item?.placeholder}
+                required={item?.required}
+                className="font-bold"
+                value={String(body[item?.key as keyof RegisterUserType])}
+                onChange={(value) =>
+                  onChange(
+                    item?.key as keyof RegisterUserType,
+                    value,
+                    item?.type
+                  )
+                }
+              />
+              {item?.key === "customerMallId" && (
+                <Button size="sm" onClick={handleCheckedId}>
+                  중복확인
+                </Button>
+              )}
             </div>
-          ))}
+          </div>
+        ))}
         <p className="text-gray-400 text-right pt-[4px] pb-[20px] text-[13px]">
           최소 8글자에서 16글자, 영문 대소문자/숫자/특수문자 중 2가지 이상 조합
         </p>
-        {formArray
-          .filter((item, i) => i > 2)
-          .map((item, i) => (
-            <div
-              key={item?.key}
-              className={`grid px-[15px] py-[5px] ${i > 0 ? "" : "border-t"} border-x border-b border-gray-300`}
-              style={{
-                gridTemplateColumns: "100px auto",
-              }}
+        {formArray.slice(3, 5).map((item, i) => (
+          <div
+            key={item?.key}
+            className={`grid px-[15px] py-[5px] ${i > 0 ? "" : "border-t"} border-x border-b border-gray-300`}
+            style={{
+              gridTemplateColumns: "100px auto",
+            }}
+          >
+            <label
+              htmlFor={id + item?.key}
+              className="items-center flex text-gray-600"
             >
-              <label
-                htmlFor={id + item?.key}
-                className="items-center flex text-gray-600"
-              >
-                {item?.label}{" "}
-                {item?.required && <span className="text-[#009e48]">*</span>}
-              </label>
-              <div className="flex items-center justify-between gap-[8px]">
-                <Input
-                  type={item?.type}
-                  id={id + item?.key}
-                  placeholder={item?.placeholder}
-                  required={item?.required}
-                  className="font-bold"
-                  value={String(body[item?.key as keyof RegisterUserType])}
-                  onChange={(value) => {
-                    let changeValue =
-                      item?.type === "tel"
-                        ? value.replace(/[^0-9]/g, "")
-                        : value;
-                    if (item?.type === "tel") {
-                      if (changeValue.length > 7) {
-                        changeValue =
-                          changeValue.substring(0, 3) +
-                          "-" +
-                          changeValue.substring(3, 7) +
-                          "-" +
-                          changeValue.substring(7);
-                      } else if (changeValue.length > 3) {
-                        changeValue =
-                          changeValue.substring(0, 3) +
-                          "-" +
-                          changeValue.substring(3);
-                      } else if (changeValue.length > 11) {
-                        changeValue = String(
-                          body[item?.key as keyof RegisterUserType]
-                        );
-                      }
-                    }
-                    setBody({
-                      ...body,
-                      [item?.key]: changeValue,
-                    });
-                  }}
-                />
-              </div>
+              {item?.label}{" "}
+              {item?.required && <span className="text-[#009e48]">*</span>}
+            </label>
+            <div className="flex items-center justify-between gap-[8px]">
+              <Input
+                type={item?.type}
+                id={id + item?.key}
+                placeholder={item?.placeholder}
+                required={item?.required}
+                className="font-bold"
+                value={String(body[item?.key as keyof RegisterUserType])}
+                onChange={(value) =>
+                  onChange(
+                    item?.key as keyof RegisterUserType,
+                    value,
+                    item?.type
+                  )
+                }
+              />
             </div>
-          ))}
+          </div>
+        ))}
         <Title type="h2" className="pt-[40px]">
           이용 약관 동의
         </Title>
@@ -181,40 +191,39 @@ export default function RegisterLanding() {
           <br />
           선택 항목에 대한 동의를 거부하는 경우에도 서비스 이용이 가능합니다.
         </p>
-        {agreeArray
-          .filter((item, i) => i < 3)
-          .map((item, i) => (
-            <div
-              key={item?.key}
-              className={`flex justify-between items-center text-[18px] ${i > 0 ? "border-t border-gray-300" : ""}`}
-            >
-              <div className="flex gap-[6px] items-center">
-                <CheckBox
-                  id={id + item?.key}
-                  checked={
-                    body[item?.key as keyof RegisterUserType] ? true : false
+        {agreeArray.slice(0, 3).map((item, i) => (
+          <div
+            key={item?.key}
+            className={`flex justify-between items-center text-[18px] ${i > 0 ? "border-t border-gray-300" : ""}`}
+          >
+            <div className="flex gap-[6px] items-center">
+              <CheckBox
+                id={id + item?.key}
+                name={item?.key}
+                checked={
+                  body[item?.key as keyof RegisterUserType] ? true : false
+                }
+                onChange={(checked) => {
+                  setBody({
+                    ...body,
+                    [item?.key]: checked,
+                  });
+                }}
+              />
+              <label htmlFor={id + item?.key} className="py-[15px]">
+                <span
+                  className={
+                    item?.required ? "text-[#009e48]" : "text-gray-500"
                   }
-                  onChange={(checked) => {
-                    setBody({
-                      ...body,
-                      [item?.key]: checked,
-                    });
-                  }}
-                />
-                <label htmlFor={id + item?.key} className="py-[15px]">
-                  <span
-                    className={
-                      item?.required ? "text-[#009e48]" : "text-gray-500"
-                    }
-                  >
-                    ({item?.required ? "필수" : "선택"})
-                  </span>{" "}
-                  {item?.label}
-                </label>
-              </div>
-              <button>약관 보기 &gt;</button>
+                >
+                  ({item?.required ? "필수" : "선택"})
+                </span>{" "}
+                {item?.label}
+              </label>
             </div>
-          ))}
+            <button>약관 보기 &gt;</button>
+          </div>
+        ))}
         <div
           className={`flex justify-between items-center text-[18px] border-t border-gray-300`}
         >
@@ -238,51 +247,51 @@ export default function RegisterLanding() {
           <button>약관 보기 &gt;</button>
         </div>
         <div className="py-[10px] border-y border-gray-300">
-          {agreeArray
-            .filter((item, i) => i > 2)
-            .map((item, i) => (
-              <div
-                key={item?.key}
-                className={`flex gap-[6px] items-center text-[18px]`}
-              >
-                <CheckBox
-                  id={id + item?.key}
-                  checked={
-                    body[item?.key as keyof RegisterUserType] ? true : false
+          {agreeArray.slice(3, 5).map((item, i) => (
+            <div
+              key={item?.key}
+              className={`flex gap-[6px] items-center text-[18px]`}
+            >
+              <CheckBox
+                id={id + item?.key}
+                name={item?.key}
+                checked={
+                  body[item?.key as keyof RegisterUserType] ? true : false
+                }
+                onChange={(checked) => {
+                  setBody({
+                    ...body,
+                    [item?.key]: checked,
+                  });
+                }}
+              />
+              <label htmlFor={id + item?.key} className="py-[7px]">
+                <span
+                  className={
+                    item?.required ? "text-[#009e48]" : "text-gray-500"
                   }
-                  onChange={(checked) => {
-                    setBody({
-                      ...body,
-                      [item?.key]: checked,
-                    });
-                  }}
-                />
-                <label htmlFor={id + item?.key} className="py-[7px]">
-                  <span
-                    className={
-                      item?.required ? "text-[#009e48]" : "text-gray-500"
-                    }
-                  >
-                    ({item?.required ? "필수" : "선택"})
-                  </span>{" "}
-                  {item?.label}
-                </label>
-              </div>
-            ))}
+                >
+                  ({item?.required ? "필수" : "선택"})
+                </span>{" "}
+                {item?.label}
+              </label>
+            </div>
+          ))}
         </div>
         <Button
           type="submit"
-          disabled={
-            (!body.customerMallId ||
-            !body.password ||
-            !body.passwordConfirm ||
-            !body.customerName ||
-            !body.customerHpNum ||
-            !body.customerMallUseYn ||
-            !body.customerProvideInfoYn)
-              ? true
-              : false
-          }
+          // disabled={
+          //   !body.customerMallId ||
+          //   !body.password ||
+          //   !body.passwordConfirm ||
+          //   !body.customerName ||
+          //   !body.customerHpNum ||
+          //   !body.customerMallUseYn ||
+          //   !body.customerProvideInfoYn ||
+          //   !checkedId
+          //     ? true
+          //     : false
+          // }
           styleType="secondary"
           size="xl"
           className="w-full mt-[40px] max-w-[360px] mx-auto block"
@@ -353,17 +362,3 @@ const agreeArray = [
   { key: "customerSmsRcvYn", label: "SMS 수신 동의", required: false },
   { key: "customerMailRcvYn", label: "이메일 수신 동의", required: false },
 ];
-
-type RegisterUserType = {
-  customerMallId: string;
-  password: string;
-  passwordConfirm: string;
-  customerName: string;
-  customerHpNum: string;
-  customerEmail: string;
-  customerMallUseYn: boolean;
-  customerProvideInfoYn: boolean;
-  customerCollectInfoYn: boolean;
-  customerSmsRcvYn: boolean;
-  customerMailRcvYn: boolean;
-};

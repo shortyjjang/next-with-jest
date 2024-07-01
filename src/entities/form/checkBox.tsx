@@ -8,6 +8,7 @@ function CheckBox(
     disabled = false,
     value,
     required,
+    name = ''
   }: {
     checked?: boolean;
     onChange?: (checked: boolean) => void;
@@ -15,6 +16,7 @@ function CheckBox(
     disabled?: boolean;
     value?: string;
     required?: boolean;
+    name?: string;
   },
   ref: React.Ref<HTMLInputElement>
 ) {
@@ -28,7 +30,7 @@ function CheckBox(
         id={value && valueId ? valueId : id}
         required={required}
         disabled={disabled}
-        name={id}
+        name={name || id}
         type="checkbox"
         className="absolute top-0 left-0 w-full h-full"
         checked={checked}
