@@ -55,3 +55,25 @@ npm install ts-node --save-dev
 ```jsx
 npm i --save-dev ts-jest
 ```
+
+## useRouter 사용시 버그 발생 provider 생성
+
+```
+/src/shared/hooks/next-router-provider-mock.tsx
+```
+
+## alert 호출시 버그 발생
+
+jest.config.ts 변경
+
+```
+  testEnvironmentOptions: {
+    beforeParse(window: Window) {
+      console.log("------------------------------------------  log ");
+      window.document.childNodes.length === 0;
+      window.alert = (msg: string) => {
+        console.log(msg);
+      };
+    },
+  },
+```

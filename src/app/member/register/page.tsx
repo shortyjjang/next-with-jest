@@ -199,7 +199,7 @@ export default function RegisterLanding() {
             <div className="flex gap-[6px] items-center">
               <CheckBox
                 id={id + item?.key}
-                name={item?.key}
+                name={item?.label}
                 checked={
                   body[item?.key as keyof RegisterUserType] ? true : false
                 }
@@ -210,14 +210,14 @@ export default function RegisterLanding() {
                   });
                 }}
               />
+              <span
+                className={
+                  item?.required ? "text-[#009e48]" : "text-gray-500"
+                }
+              >
+                ({item?.required ? "필수" : "선택"})
+              </span>
               <label htmlFor={id + item?.key} className="py-[15px]">
-                <span
-                  className={
-                    item?.required ? "text-[#009e48]" : "text-gray-500"
-                  }
-                >
-                  ({item?.required ? "필수" : "선택"})
-                </span>{" "}
                 {item?.label}
               </label>
             </div>
@@ -239,9 +239,9 @@ export default function RegisterLanding() {
                 });
               }}
             />
+            <span className="text-gray-500">(선택)</span>
             <label htmlFor={id + "agree34"} className="py-[15px]">
-              <span className="text-gray-500">(선택)</span> 광고성 정보 수신
-              동의
+              광고성 정보 수신 동의
             </label>
           </div>
           <button>약관 보기 &gt;</button>
@@ -254,7 +254,7 @@ export default function RegisterLanding() {
             >
               <CheckBox
                 id={id + item?.key}
-                name={item?.key}
+                name={item?.label}
                 checked={
                   body[item?.key as keyof RegisterUserType] ? true : false
                 }
@@ -265,14 +265,14 @@ export default function RegisterLanding() {
                   });
                 }}
               />
+              <span
+                className={
+                  item?.required ? "text-[#009e48]" : "text-gray-500"
+                }
+              >
+                ({item?.required ? "필수" : "선택"})
+              </span>
               <label htmlFor={id + item?.key} className="py-[7px]">
-                <span
-                  className={
-                    item?.required ? "text-[#009e48]" : "text-gray-500"
-                  }
-                >
-                  ({item?.required ? "필수" : "선택"})
-                </span>{" "}
                 {item?.label}
               </label>
             </div>
@@ -280,18 +280,18 @@ export default function RegisterLanding() {
         </div>
         <Button
           type="submit"
-          // disabled={
-          //   !body.customerMallId ||
-          //   !body.password ||
-          //   !body.passwordConfirm ||
-          //   !body.customerName ||
-          //   !body.customerHpNum ||
-          //   !body.customerMallUseYn ||
-          //   !body.customerProvideInfoYn ||
-          //   !checkedId
-          //     ? true
-          //     : false
-          // }
+          disabled={
+            !body.customerMallId ||
+            !body.password ||
+            !body.passwordConfirm ||
+            !body.customerName ||
+            !body.customerHpNum ||
+            !body.customerMallUseYn ||
+            !body.customerProvideInfoYn ||
+            !checkedId
+              ? true
+              : false
+          }
           styleType="secondary"
           size="xl"
           className="w-full mt-[40px] max-w-[360px] mx-auto block"

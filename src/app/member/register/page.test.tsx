@@ -20,7 +20,7 @@ describe("회원가입", () => {
     render(<AppRouterProvider router={push as Partial<AppRouterInstance>}><Register /></AppRouterProvider>);
     const button = screen.getByRole("button", { name: "가입하기" });
     await waitFor(() => {
-      expect(button).toBeEnabled();
+      expect(button).toBeDisabled();
     });
   });
   it("필수 사항을 입력하면 가입하기 버튼이 활성화 되어야 합니다.", async () => {
@@ -31,21 +31,21 @@ describe("회원가입", () => {
     const checkIdButton = screen.getByRole("button", { name: "중복확인" });
     fireEvent.click(checkIdButton);
     const password = screen.getByPlaceholderText("비밀번호를 입력해주세요");
-    fireEvent.change(password, { target: { value: "test" } });
+    fireEvent.change(password, { target: { value: "test1234" } });
     const passwordConfirm = screen.getByPlaceholderText("비밀번호를 한번 더 입력해주세요");
-    fireEvent.change(passwordConfirm, { target: { value: "test" } });
+    fireEvent.change(passwordConfirm, { target: { value: "test1234" } });
     const name = screen.getByPlaceholderText("이름을 입력해주세요");
     fireEvent.change(name, { target: { value: "test" } });
     const hpNum = screen.getByPlaceholderText("휴대폰번호를 입력해주세요");
     fireEvent.change(hpNum, { target: { value: "010-1234-5678" } });
-    const useMallCheck = screen.getByLabelText('이용약관 동의')
+    const useMallCheck = screen.getByRole('checkbox' ,{name:'이용약관 동의'})
     fireEvent.click(useMallCheck);
-    const provideInfoCheck = screen.getByText('개인정보 제공 동의')
-    fireEvent.click(provideInfoCheck, { target: { checked: true } });
+    const provideInfoCheck = screen.getByRole('checkbox' ,{name:'개인정보 처리방침 동의'})
+    fireEvent.click(provideInfoCheck);
     const button = screen.getByRole("button", { name: "가입하기" });
     fireEvent.click(button);
     await waitFor(() => {
-      expect(button).toBeDisabled();
+      expect(button).toBeEnabled();
     });
   });
 });
