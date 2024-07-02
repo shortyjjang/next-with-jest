@@ -9,9 +9,11 @@ import {
   validatationPassword,
   validationEmail,
 } from "@/shared/utils/validatation";
+import { useRouter } from "next/navigation";
 import React, { useId, useState } from "react";
 
 export default function RegisterLanding() {
+  const router = useRouter();
   const id = useId();
   const { setUser } = useUserInfo();
   const [checkedId, setCheckedId] = useState(false);
@@ -29,6 +31,7 @@ export default function RegisterLanding() {
     customerMailRcvYn: false,
   });
   const handleCheckedId = () => {
+    alert("사용 가능한 아이디 입니다.");
     setCheckedId(true);
   };
   const onChange = (
@@ -39,7 +42,12 @@ export default function RegisterLanding() {
     let changeValue = type === "tel" ? value.replace(/[^0-9]/g, "") : value;
     if (type === "tel") {
       if (changeValue.length > 11) {
-        changeValue = String(body[key as keyof RegisterUserType]);
+        changeValue =
+          changeValue.substring(0, 3) +
+          "-" +
+          changeValue.substring(3, 7) +
+          "-" +
+          changeValue.substring(7, 11);
       } else if (changeValue.length > 7) {
         changeValue =
           changeValue.substring(0, 3) +
@@ -59,7 +67,6 @@ export default function RegisterLanding() {
   };
   const handleJoinMember = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(body);
     if (!validatationPassword(body.password, body.passwordConfirm)) {
       alert("비밀번호를 확인해주세요");
       return;
@@ -68,12 +75,14 @@ export default function RegisterLanding() {
       alert("휴대폰 번호를 확인해주세요");
       return;
     }
-    if (body.customerEmail && validationEmail(body.customerEmail)) {
+    if (body.customerEmail && !validationEmail(body.customerEmail)) {
       alert("이메일을 확인해주세요");
       return;
     }
     setUser(body.customerMallId, "token");
+    localStorage.setItem("token", "token");
     alert("회원가입이 완료되었습니다.");
+    router.push("/");
   };
   return (
     <div className="max-w-[500px] mx-auto">
@@ -112,7 +121,11 @@ export default function RegisterLanding() {
                 }
               />
               {item?.key === "customerMallId" && (
-                <Button size="sm" onClick={handleCheckedId}>
+                <Button
+                  size="sm"
+                  disabled={!body.customerMallId}
+                  onClick={handleCheckedId}
+                >
                   중복확인
                 </Button>
               )}
@@ -122,7 +135,7 @@ export default function RegisterLanding() {
         <p className="text-gray-400 text-right pt-[4px] pb-[20px] text-[13px]">
           최소 8글자에서 16글자, 영문 대소문자/숫자/특수문자 중 2가지 이상 조합
         </p>
-        {formArray.slice(3, 5).map((item, i) => (
+        {formArray.slice(3).map((item, i) => (
           <div
             key={item?.key}
             className={`grid px-[15px] py-[5px] ${i > 0 ? "" : "border-t"} border-x border-b border-gray-300`}
@@ -211,9 +224,7 @@ export default function RegisterLanding() {
                 }}
               />
               <span
-                className={
-                  item?.required ? "text-[#009e48]" : "text-gray-500"
-                }
+                className={item?.required ? "text-[#009e48]" : "text-gray-500"}
               >
                 ({item?.required ? "필수" : "선택"})
               </span>
@@ -247,7 +258,7 @@ export default function RegisterLanding() {
           <button>약관 보기 &gt;</button>
         </div>
         <div className="py-[10px] border-y border-gray-300">
-          {agreeArray.slice(3, 5).map((item, i) => (
+          {agreeArray.slice(3).map((item, i) => (
             <div
               key={item?.key}
               className={`flex gap-[6px] items-center text-[18px]`}
@@ -266,9 +277,7 @@ export default function RegisterLanding() {
                 }}
               />
               <span
-                className={
-                  item?.required ? "text-[#009e48]" : "text-gray-500"
-                }
+                className={item?.required ? "text-[#009e48]" : "text-gray-500"}
               >
                 ({item?.required ? "필수" : "선택"})
               </span>

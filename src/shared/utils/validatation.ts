@@ -16,11 +16,12 @@ export const validatationPassword = (password: string, passwordConfirm?:string) 
         checkRule += 1
     }
     if(checkRule < 2) {
-        return false;
+        return checkRule < 2;
     }
     if(passwordConfirm && password !== passwordConfirm) {
         return false;
     }
+    return true
 }
 
 export const validationEmail = (email: string) => {

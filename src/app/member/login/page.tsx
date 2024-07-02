@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 export default function LoginLanding() {
-  const {setUser} = useUserInfo()
+  const { setUser } = useUserInfo();
   const router = useRouter();
   const loginIdRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
@@ -18,10 +18,13 @@ export default function LoginLanding() {
   });
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if(validatationPassword(body.password)) {
-      alert("비밀번호는 8자 이상, 16자 이하,\n영문, 숫자, 특수문자 중 두가지를 포함해야 합니다.");
+    if (!validatationPassword(body.password)) {
+      alert(
+        "비밀번호는 8자 이상, 16자 이하,\n영문, 숫자, 특수문자 중 두가지를 포함해야 합니다."
+      );
       return;
     }
+    localStorage.setItem("token", "token");
     setUser(body.username, "token");
     router.push("/");
   };

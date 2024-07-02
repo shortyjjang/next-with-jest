@@ -161,10 +161,10 @@ const config: Config = {
   // Options that will be passed to the testEnvironment
   testEnvironmentOptions: {
     beforeParse(window: Window) {
-      console.log("------------------------------------------  log ");
+      //console.log("------------------------------------------  log ");
       window.document.childNodes.length === 0;
       window.alert = (msg: string) => {
-        console.log(msg);
+        //console.log(msg);
       };
     },
   },
