@@ -85,7 +85,7 @@ export default function RegisterLanding() {
     router.push("/");
   };
   return (
-    <div className="max-w-[500px] mx-auto">
+    <div className="max-w-[500px] mx-auto p-8">
       <Title>회원가입</Title>
       <form onSubmit={handleJoinMember}>
         <Title type="h3">일반 회원가입</Title>

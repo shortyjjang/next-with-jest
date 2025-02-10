@@ -33,7 +33,7 @@ export default function LoginLanding() {
     loginIdRef.current?.focus();
   }, [loginIdRef]);
   return (
-    <div className="max-w-[400px] mx-auto">
+    <div className="max-w-[400px] mx-auto p-8">
       <Title>로그인</Title>
       <form onSubmit={handleLogin}>
         <Input
